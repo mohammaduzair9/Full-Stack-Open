@@ -4,6 +4,14 @@ const Display = ({ text, value }) => <div>{text} {value}</div>
 const Button = ({ onClick, text }) => <button onClick={onClick}> {text} </button>
 
 const Statistics = ({ good, bad, neutral, total, average, positive }) => {
+
+  if (total === 0) {
+    return (
+      <div>
+        No feedback given
+      </div>
+    )
+  }
   return (
     <div>
       <Display text="good" value={good} />
@@ -14,6 +22,7 @@ const Statistics = ({ good, bad, neutral, total, average, positive }) => {
       <Display text="positive" value={positive + " %"} />
     </div>  
   )
+  
 }
 
 
