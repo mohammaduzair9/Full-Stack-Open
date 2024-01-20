@@ -31,14 +31,11 @@ const Content = ({ parts }) => {
 
 const Total = ({ parts }) => {
 
-  let sum = 0;
-  for (let i = 0; i < parts.length; i++) {
-    sum += parts[i].exercises;
-  }
+  const total = parts.reduce((sum, part) => sum + part.exercises, 0)
   
   return (
     <div>
-      <b>total of {sum} exercises</b>
+      <b>total of {total} exercises</b>
     </div>
   )
 }
