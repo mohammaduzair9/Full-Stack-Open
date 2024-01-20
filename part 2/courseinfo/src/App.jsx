@@ -1,3 +1,4 @@
+// Imported course module
 import Course from './components/Course'
 
 const App = () => {
