@@ -67,6 +67,13 @@ const App = () => {
             setNotification(null)
           }, 5000)
         })
+        .catch(error => {
+          setNotification(`Information of ${newPersonObject.name} has already been removed from the server`)
+          setEventSuccess(0)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
         
     }
   }
@@ -77,8 +84,19 @@ const App = () => {
       personService
         .deletePerson(person.id)
         .then(deletedPerson => {
-          console.log(`Person with id ${deletedPerson.id} removed successfully`);
           setPersons(persons.filter(person => person.id != deletedPerson.id))
+          setNotification(`Person with id ${deletedPerson.id} removed successfully`)
+          setEventSuccess(1)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setNotification(`Information of person with id ${person.id} has already been removed from the server`)
+          setEventSuccess(0)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
         })
     }
   }
