@@ -1,4 +1,30 @@
+import { useState, useEffect } from 'react'
+
+import weatherService from '../services/weather'
+
 const Country = ({ country }) => {
+
+  const [countryWeather, setCountryWeather] = useState(null)
+
+  let weatherData = null
+
+  useEffect(() => {
+    weatherService
+      .getCityWeather(country.capital)
+      .then( weather => {
+        setCountryWeather(weather)
+      })
+  }, [])
+
+  if (countryWeather !== null) {
+    weatherData = 
+      <div>
+        <h3>Weather in {country.capital}</h3>
+        <p>temperature {countryWeather.main.temp} Celcius</p>
+        <img src={`https://openweathermap.org/img/wn/${countryWeather.weather[0].icon}@2x.png`} />
+        <p>wind {countryWeather.wind.speed} m/s</p>
+      </div>
+  }
 
   return (
     <div>
@@ -13,6 +39,8 @@ const Country = ({ country }) => {
         ))}
       </ul>
       <img src={country.flags.png} alt={country.flags.alt} />
+      
+      {weatherData}
     </div>
   )
 }
