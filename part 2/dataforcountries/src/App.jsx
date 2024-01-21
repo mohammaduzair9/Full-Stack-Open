@@ -22,6 +22,10 @@ const App = () => {
     setFilterCountry(event.target.value)
   }
 
+  const handleSelectedCountry = (country) => {
+    setFilterCountry(country)
+  }
+
   const countriesToShow = countries.filter(country => country.name.common.toLowerCase().includes(filterCountry.toLowerCase()))
 
   let countryData = null
@@ -29,7 +33,7 @@ const App = () => {
     countryData = <div>Too many matches, specify another filter</div>
   }
   else if (countriesToShow.length > 1) {
-    countryData = <Countries countriesToShow={countriesToShow} />
+    countryData = <Countries countriesToShow={countriesToShow} handleSelectedCountry={handleSelectedCountry}/>
   }
   else if (countriesToShow.length === 1){
     countryData = <Country country={countriesToShow[0]} />
@@ -37,7 +41,7 @@ const App = () => {
 
   return (
     <div>
-      <Filter handleFilter={handleCountryFilter} />
+      <Filter value={filterCountry} handleFilter={handleCountryFilter} />
       {countryData}
     </div>
   )

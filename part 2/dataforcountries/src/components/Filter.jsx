@@ -1,8 +1,8 @@
-const Filter = ({ handleFilter }) => {
+const Filter = ({ value, handleFilter }) => {
 
   return (
     <div>
-      find countries <input onChange={handleFilter} />
+      find countries <input value={value} onChange={handleFilter} />
     </div>
   )
 }
