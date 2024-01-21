@@ -14,7 +14,7 @@ const App = () => {
 
   useEffect(() => {
     personService
-      .getAll()
+      .getAllPersons()
       .then( initialPersons => {
         setPersons(initialPersons)
       })
@@ -30,17 +30,29 @@ const App = () => {
       const newPersonObject = {
         name: newName,
         number: newNumber,
-        id: persons.length+1
+        id: (persons.length+1).toString()
       }
 
       personService
-        .create(newPersonObject)
+        .createPerson(newPersonObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))  
           setNewName('')
           setNewNumber('')
         })
         
+    }
+  }
+
+  const handleDelete = (person) => {
+    
+    if (window.confirm(`Delete "${person.name}" ?`)) {
+      personService
+        .deletePerson(person.id)
+        .then(deletedPerson => {
+          console.log(`Person with id ${deletedPerson.id} removed successfully`);
+          setPersons(persons.filter(person => person.id != deletedPerson.id))
+        })
     }
   }
 
@@ -67,7 +79,7 @@ const App = () => {
       <PersonForm handleAddPerson={handleAddPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
     
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleDelete={handleDelete} />
     </div>
   )
 }
