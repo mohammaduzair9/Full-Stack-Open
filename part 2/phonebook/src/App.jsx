@@ -13,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
   const [notification, setNotification] = useState(null)
+  const [eventSuccess, setEventSuccess] = useState(1)
 
   useEffect(() => {
     personService
@@ -35,6 +36,14 @@ const App = () => {
           .then(returnedPerson => {
             setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson))
             setNotification(`Updated ${returnedPerson.name}`)
+            setEventSuccess(1)
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setNotification(`Information of ${updatedPerson.name} has already been removed from the server`)
+            setEventSuccess(0)
             setTimeout(() => {
               setNotification(null)
             }, 5000)
@@ -53,6 +62,7 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setNotification(`Added ${returnedPerson.name}`)
+          setEventSuccess(1)
           setTimeout(() => {
             setNotification(null)
           }, 5000)
@@ -90,7 +100,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification message={notification} success={eventSuccess}/>
 
       <Filter handleFilter={handleNameFilter}></Filter>
 
