@@ -120,7 +120,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Notification message={notification} success={eventSuccess}/>
 
-      <Filter handleFilter={handleNameFilter}></Filter>
+      <Filter handleFilter={handleNameFilter} />
 
       <h3>Add a new</h3>
       <PersonForm handleAddPerson={handleAddPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
