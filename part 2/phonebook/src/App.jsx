@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
+
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -11,14 +12,13 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
 
-  const datahook = () => {
-    const datahandler = response => {
-      setPersons(response.data)
-    }
-    const datapromise = axios.get('http://localhost:3001/persons')
-    datapromise.then(datahandler)
-  }
-  useEffect(datahook, [])
+  useEffect(() => {
+    personService
+      .getAll()
+      .then( initialPersons => {
+        setPersons(initialPersons)
+      })
+  }, [])
 
   const handleAddPerson = (event) => {
     event.preventDefault()
@@ -33,13 +33,14 @@ const App = () => {
         id: persons.length+1
       }
 
-      axios
-        .post('http://localhost:3001/persons', newPersonObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))  
+      personService
+        .create(newPersonObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))  
           setNewName('')
           setNewNumber('')
         })
+        
     }
   }
 
@@ -50,7 +51,6 @@ const App = () => {
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
-
 
   const handleNameFilter = (event) => {
     setFilterName(event.target.value)
