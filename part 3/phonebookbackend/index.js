@@ -7,8 +7,8 @@ const Person = require('./models/person')
 const app = express()
 
 app.use(cors())
-app.use(express.json())
 app.use(express.static('dist'))
+app.use(express.json())
 
 morgan.token('postdata', (request) => {
   if(request.method === 'POST'){
@@ -74,10 +74,10 @@ app.post('/api/persons/', (request, response) => {
 // DELETE Methods //
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(person => person.id !== id)
-
-  response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
 })
 
 const PORT = process.env.PORT || 3001
