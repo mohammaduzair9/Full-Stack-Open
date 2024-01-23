@@ -115,3 +115,25 @@ describe('favorite blog', () => {
   })
 
 })
+
+describe('most blogs', () => {
+
+  test('when list is empty, null is returned ', () => {
+    const blogs = []
+
+    const result = listHelper.mostBlogs(blogs)
+    expect(result).toBeNull()
+  })
+
+  test('when list is not empty, author with most blogs is returned', () => {
+
+    topAuthor = {
+      author: "Robert C. Martin",
+      blogs: 3
+    }
+
+    const result = listHelper.mostBlogs(blogs)
+    expect(result).toEqual(topAuthor)
+  })
+
+})

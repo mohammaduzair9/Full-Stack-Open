@@ -1,3 +1,5 @@
+const { flow, countBy, toPairs, maxBy, last, zipObject } = require("lodash"); 
+
 const dummy = (blogs) => {
   return 1
 }
@@ -15,6 +17,27 @@ const favoriteBlog = (blogs) => {
   }  
 }
 
+const mostBlogs = (blogs) => {
+
+  if (blogs.length === 0) {
+    return null
+  }
+  else{
+
+    const author = flow(
+      blogs => countBy(blogs, 'author'), // authors and count
+      toPairs, // pairing to arrays
+      blogs => maxBy(blogs, last), // max from array
+      blog => zipObject(['author', 'blogs'], blog) // to desired format
+    )
+
+    console.log(author(blogs))
+
+    return author(blogs)
+  }
+}
+
+
 module.exports = {
-  dummy, totalLikes, favoriteBlog
+  dummy, totalLikes, favoriteBlog, mostBlogs
 }
