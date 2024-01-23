@@ -54,7 +54,6 @@ const App = () => {
       const newPersonObject = {
         name: newName,
         number: newNumber,
-        id: (persons.length+1).toString()
       }
 
       personService
@@ -83,9 +82,9 @@ const App = () => {
     if (window.confirm(`Delete "${person.name}" ?`)) {
       personService
         .deletePerson(person.id)
-        .then(deletedPerson => {
-          setPersons(persons.filter(person => person.id != deletedPerson.id))
-          setNotification(`Person with id ${deletedPerson.id} removed successfully`)
+        .then(deleteResponse => {
+          setPersons(persons.filter(p => p.id != person.id))
+          setNotification(`Person with id ${person.id} removed successfully`)
           setEventSuccess(1)
           setTimeout(() => {
             setNotification(null)

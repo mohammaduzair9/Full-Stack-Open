@@ -28,8 +28,12 @@ let persons = [
 
 // GET Methods //
 
-app.get('/api/info', (request, response) => {
-  response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
+app.get('/api/info', (request, response, next) => {
+  Person.find({})
+    .then(persons => {
+      response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, response, next) => {
@@ -98,6 +102,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then(result => {
+      console.log(result)
       response.status(204).end()
     })
     .catch(error => next(error))
