@@ -18,10 +18,10 @@ morgan.token('postdata', (request) => {
     return null
   }
 })
-  
+
 app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :postdata')
-);
+)
 
 let persons = [
 ]
@@ -46,10 +46,10 @@ app.get('/api/persons', (request, response, next) => {
 
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
-  .then(person => {
-    response.json(person)
-  })
-  .catch(error => next(error))
+    .then(person => {
+      response.json(person)
+    })
+    .catch(error => next(error))
 })
 
 // POST Methods //
@@ -58,13 +58,13 @@ app.post('/api/persons/', (request, response, next) => {
   const body = request.body
 
   if(!body.name || !body.number){
-    return response.status(400).json({ 
-      error: 'name or number is missing' 
+    return response.status(400).json({
+      error: 'name or number is missing'
     })
   }
   if(persons.find(person => person.name === body.name)){
-    return response.status(400).json({ 
-      error: 'name must be unique' 
+    return response.status(400).json({
+      error: 'name must be unique'
     })
   }
 
@@ -86,10 +86,10 @@ app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
 
   Person.findByIdAndUpdate(
-    request.params.id, 
-    { name, number }, 
+    request.params.id,
+    { name, number },
     { new: true, runValidators: true, context: 'query' }
-  ) 
+  )
     .then(updatePerson => {
       response.json(updatePerson)
     })
