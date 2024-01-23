@@ -42,7 +42,7 @@ const App = () => {
             }, 5000)
           })
           .catch(error => {
-            setNotification(`Information of ${updatedPerson.name} has already been removed from the server`)
+            setNotification(error.response.data.error)
             setEventSuccess(0)
             setTimeout(() => {
               setNotification(null)
