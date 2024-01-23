@@ -1,4 +1,4 @@
-const { flow, countBy, toPairs, maxBy, last, zipObject } = require("lodash"); 
+const { flow, countBy, toPairs, maxBy, last, zipObject, head, values, map, sumBy, groupBy } = require("lodash"); 
 
 const dummy = (blogs) => {
   return 1
@@ -31,13 +31,31 @@ const mostBlogs = (blogs) => {
       blog => zipObject(['author', 'blogs'], blog) // to desired format
     )
 
-    console.log(author(blogs))
+    return author(blogs)
+  }
+}
 
+const mostLikes = (blogs) => {
+
+  if (blogs.length === 0) {
+    return null
+  }
+  else{
+
+    const author = flow(
+        blogs => groupBy(blogs, 'author'),
+        authors => map(authors, blog => ({ 
+            author: blog[0].author, 
+            likes: sumBy(blog, 'likes') 
+          })),
+        authorsLikes => maxBy(authorsLikes, 'likes')
+    )
+    
     return author(blogs)
   }
 }
 
 
 module.exports = {
-  dummy, totalLikes, favoriteBlog, mostBlogs
+  dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }
