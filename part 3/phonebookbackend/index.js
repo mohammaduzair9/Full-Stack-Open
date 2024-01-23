@@ -26,6 +26,8 @@ app.use(
 let persons = [
 ]
 
+// GET Methods //
+
 app.get('/api/info', (request, response) => {
   response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
 })
@@ -42,6 +44,8 @@ app.get('/api/persons/:id', (request, response) => {
   })
 })
 
+// POST Methods //
+
 app.post('/api/persons/', (request, response) => {
   const body = request.body
 
@@ -56,16 +60,18 @@ app.post('/api/persons/', (request, response) => {
     })
   }
 
-  const person = {
-    id: Math.floor(Math.random() * 10000),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
+  })
 
-  persons = persons.concat(person)
-
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(person)
+  })
 })
+
+
+// DELETE Methods //
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
