@@ -89,3 +89,29 @@ describe('total likes', () => {
   })
 
 })
+
+describe('favorite blog', () => {
+
+  test('when list is empty, null is returned ', () => {
+    const blogs = []
+
+    const result = listHelper.favoriteBlog(blogs)
+    expect(result).toBeNull()
+  })
+    
+  test('when list is not empty, blog with most likes is returned ', () => {
+
+    favorite = {
+      _id: "5a422b3a1b54a676234d17f9",
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+      likes: 12,
+      __v: 0
+    }
+
+    const result = listHelper.favoriteBlog(blogs)
+    expect(result).toEqual(favorite)
+  })
+
+})
