@@ -67,7 +67,7 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
-          setNotification(`Information of ${newPersonObject.name} has already been removed from the server`)
+          setNotification(error.response.data.error)
           setEventSuccess(0)
           setTimeout(() => {
             setNotification(null)
@@ -91,7 +91,7 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
-          setNotification(`Information of person with id ${person.id} has already been removed from the server`)
+          setNotification(error.response.data.error)
           setEventSuccess(0)
           setTimeout(() => {
             setNotification(null)
