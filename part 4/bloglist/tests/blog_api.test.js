@@ -1,39 +1,71 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
-
+const User = require('../models/user')
 
 beforeEach(async () => {
+  await User.deleteMany({})
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ username: 'root', passwordHash })
+  await user.save()
+
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  const blogUser = await User.findOne({})
+  const blogsWithUser = helper.initialBlogs
+    .map(b => ({
+      ...b,
+      user: blogUser.id
+    }))
+    await Blog.insertMany(blogsWithUser)
+
+  const validUser = {
+    username: "root",
+    password: "sekret",
+  }
+
+  // Using login API to test valid use and getting a token
+  const loggenInUser = await api
+    .post('/api/login')
+    .send(validUser)
+
+  userToken = loggenInUser.body.token
 })
 
 describe('when there is initially some blogs saved', () => {
+  
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
   test('all blogs are returned', async () => {
-    const response = await api.get('/api/blogs')
+    const response = await api
+      .get('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
 
     expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
 
   test('a specific blog is within the returned blogs', async () => {
-    const response = await api.get('/api/blogs')
+    const response = await api
+      .get('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
 
     const titles = response.body.map(r => r.title)
     expect(titles).toContain(helper.initialBlogs[2].title)
   })
 
   test('unique identifier property is named id', async () => {
-    const response = await api.get('/api/blogs')
+    const response = await api
+      .get('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
     
     response.body.forEach(blog => {
       expect(blog.id).toBeDefined();
@@ -47,6 +79,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
       .send(helper.oneBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -63,6 +96,7 @@ describe('addition of a new blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
       .send(helper.oneBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -71,8 +105,21 @@ describe('addition of a new blog', () => {
     
   })
 
-  test('without title or url property fails with bad request', async () => {
+  test('fails with 401 unauthorized if no token is provided', async () => {
 
+    await api
+      .post('/api/blogs')
+      .send(helper.oneBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    
+  })
+
+  test('without title or url property fails with bad request', async () => {
+    
     const testBlog = new Blog({
       author: helper.oneBlog.author,
       url: helper.oneBlog.url
@@ -80,6 +127,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
       .send(testBlog)
       .expect(400)
     
@@ -106,6 +154,7 @@ describe('updation of a blog', () => {
 
     const response = await api
       .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${userToken}`)
       .send(testBlog)  
       .expect(200)
 
@@ -132,6 +181,7 @@ describe('updation of a blog', () => {
 
     const response = await api
       .put(`/api/blogs/${helper.oneBlog.id}`)
+      .set('Authorization', `Bearer ${userToken}`)
       .send(testBlog)  
       .expect(400)
 
@@ -145,6 +195,7 @@ describe('deletion of a blog', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${userToken}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
