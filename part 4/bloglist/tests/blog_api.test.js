@@ -29,10 +29,7 @@ describe('when there is initially some blogs saved', () => {
     const response = await api.get('/api/blogs')
 
     const titles = response.body.map(r => r.title)
-
-    expect(titles).toContain(
-      'Type wars'
-    )
+    expect(titles).toContain(helper.initialBlogs[2].title)
   })
 
   test('unique identifier property is named id', async () => {
@@ -43,6 +40,26 @@ describe('when there is initially some blogs saved', () => {
     })
   });
 })
+
+describe('addition of a new blog', () => {
+  test('succeeds with valid data', async () => {
+
+    await api
+      .post('/api/blogs')
+      .send(helper.oneBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+    const titles = blogsAtEnd.map(n => n.title)
+    expect(titles).toContain(helper.oneBlog.title)
+    
+  })
+
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
