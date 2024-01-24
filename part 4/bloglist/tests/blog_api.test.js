@@ -67,7 +67,7 @@ describe('addition of a new blog', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.likes).toEqual(0);
+    expect(response.body.likes).toEqual(0)
     
   })
 
@@ -89,6 +89,74 @@ describe('addition of a new blog', () => {
   
   })
 
+})
+
+describe('updation of a blog', () => {
+  test('succeeds with status code 200 if id is valid', async () => {
+
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const testBlog = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: 100 
+    }
+
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(testBlog)  
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(
+      helper.initialBlogs.length 
+    )
+
+    expect(response.body.likes).toEqual(testBlog.likes)
+  })
+
+  test('fails with bad request if id is invalid', async () => {
+    
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const testBlog = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: 100 
+    }
+
+    const response = await api
+      .put(`/api/blogs/${helper.oneBlog.id}`)
+      .send(testBlog)  
+      .expect(400)
+
+  })
+})
+
+describe('deletion of a blog', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(
+      helper.initialBlogs.length - 1
+    )
+
+    const titles = blogsAtEnd.map(r => r.titles)
+
+    expect(titles).not.toContain(blogToDelete.title)
+  })
 })
 
 afterAll(async () => {
