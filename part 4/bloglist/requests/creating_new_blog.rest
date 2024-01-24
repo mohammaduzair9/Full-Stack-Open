@@ -2,8 +2,16 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "author": "John Doe",
-  "title": "My blog",
-  "url": "https:test",
-  "likes": 10
+  "author": "Michael Chan",
+  "title": "React patterns",
+  "url": "https://reactpatterns.com/",
+  "likes": 7
 }
+
+# {
+#   "author": "Edsger W. Dijkstra",
+#   "title": "Go To Statement Considered Harmful",
+#   "url": "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+#   "likes": 5
+# }
+
