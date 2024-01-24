@@ -1,10 +1,10 @@
-const supertest = require('supertest')
 const mongoose = require('mongoose')
+const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
-
 const Blog = require('../models/blog')
+
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -38,7 +38,8 @@ describe('when there is initially some blogs saved', () => {
     response.body.forEach(blog => {
       expect(blog.id).toBeDefined();
     })
-  });
+  })
+
 })
 
 describe('addition of a new blog', () => {
@@ -68,6 +69,24 @@ describe('addition of a new blog', () => {
 
     expect(response.body.likes).toEqual(0);
     
+  })
+
+  test('without title or url property fails with bad request', async () => {
+
+    const testBlog = new Blog({
+      author: helper.oneBlog.author,
+      url: helper.oneBlog.url
+    })
+
+    await api
+      .post('/api/blogs')
+      .send(testBlog)
+      .expect(400)
+    
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  
   })
 
 })
