@@ -58,6 +58,18 @@ describe('addition of a new blog', () => {
     
   })
 
+  test('with likes property missing defaults it to 0', async () => {
+
+    const response = await api
+      .post('/api/blogs')
+      .send(helper.oneBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.likes).toEqual(0);
+    
+  })
+
 })
 
 afterAll(async () => {
