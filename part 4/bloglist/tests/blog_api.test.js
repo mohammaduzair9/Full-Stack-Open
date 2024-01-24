@@ -25,7 +25,7 @@ describe('when there is initially some blogs saved', () => {
     expect(response.body).toHaveLength(helper.initialBlogs.length)
   })
 
-  test('a specific note is within the returned notes', async () => {
+  test('a specific blog is within the returned blogs', async () => {
     const response = await api.get('/api/blogs')
 
     const titles = response.body.map(r => r.title)
@@ -34,6 +34,14 @@ describe('when there is initially some blogs saved', () => {
       'Type wars'
     )
   })
+
+  test('unique identifier property is named id', async () => {
+    const response = await api.get('/api/blogs')
+    
+    response.body.forEach(blog => {
+      expect(blog.id).toBeDefined();
+    })
+  });
 })
 afterAll(async () => {
   await mongoose.connection.close()
