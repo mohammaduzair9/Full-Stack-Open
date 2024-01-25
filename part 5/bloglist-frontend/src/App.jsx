@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notiification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -10,6 +11,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState(null)
+  const [eventSuccess, setEventSuccess] = useState(1)
   const [user, setUser] = useState(null)
 
   const getBlogs = async () => {
@@ -43,8 +46,14 @@ const App = () => {
       setUsername('')
       setPassword('')
       getBlogs()
-    } catch (exception) {
-      console.log("Wrong credentials")
+      setEventSuccess(1)
+    } 
+    catch (exception) {
+      setNotification("wrong username or password")
+      setEventSuccess(0)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
   }
 
@@ -64,9 +73,18 @@ const App = () => {
       setAuthor('')
       setUrl('')
       setBlogs(blogs.concat(returnedBlog))
-      
-    } catch (exception) {
-      console.log("Blog could not be created")
+      setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+      setEventSuccess(1)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    } 
+    catch (exception) {
+      setNotification("Blog could not be created")
+      setEventSuccess(0)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
   }
 
@@ -143,6 +161,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={notification} success={eventSuccess}/>
       {!user && loginForm()} 
       {user && (
       <div>
