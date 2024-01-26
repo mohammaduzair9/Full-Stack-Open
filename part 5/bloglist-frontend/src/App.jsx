@@ -104,6 +104,25 @@ const App = () => {
     }
   }
 
+  const handleDeleteBlog = async id => {
+    try {
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter(blog => blog.id != id))
+      setNotification(`removed blog successfully`)
+      setEventSuccess(1)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    } 
+    catch (exception) {
+      setNotification("Blog could not be removed")
+      setEventSuccess(0)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
   const loginForm = () => (
     <div>
       <h2>Log in to application</h2>
@@ -140,7 +159,7 @@ const App = () => {
   const blogLists = () => ( 
     <div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={handleAddLike} />
+        <Blog key={blog.id} user={user} blog={blog} addLike={handleAddLike} deleteBlog={handleDeleteBlog} />
       )}
     </div>
   )
