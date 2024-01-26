@@ -131,8 +131,8 @@ const App = () => {
       {user && (
       <div>
         <h2>blogs</h2>
-        <p>{
-          user.name} logged in
+        <p>
+          {user.name} logged in
           <button type="submit" onClick={handleLogout}>logout</button>
         </p>
         {createBlogForm()}
