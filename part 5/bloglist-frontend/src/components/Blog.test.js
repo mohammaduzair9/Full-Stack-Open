@@ -1,9 +1,12 @@
 import React from 'react'
 import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 
-test('blog title and author rendered by default, bit URL or likes not rendered by default', () => {
+describe('<Blog />', () => {
+
+  let container
 
   const testBlog = {
     title: 'my test blog',
@@ -19,14 +22,31 @@ test('blog title and author rendered by default, bit URL or likes not rendered b
     token: 'mytesttoken'
   }
 
-  const container = render(
-    <Blog user={ testUser } blog={ testBlog } addLike={ () => null } deleteBlog={ () => null } />
-  ).container
+  beforeEach(() => {
+    container = render(
+      <Blog user={ testUser } blog={ testBlog } addLike={ () => null } deleteBlog={ () => null } />
+    ).container
+  })
 
-  const div1 = container.querySelector('.defaultblogDetail')
-  expect(div1).not.toHaveStyle('display: none')
+  test('blog title and author rendered by default, but URL or likes not rendered by default', () => {
 
-  const div2 = container.querySelector('.hiddenblogDetail')
-  expect(div2).toHaveStyle('display: none')
+    const div1 = container.querySelector('.defaultblogDetail')
+    expect(div1).not.toHaveStyle('display: none')
+
+    const div2 = container.querySelector('.hiddenblogDetail')
+    expect(div2).toHaveStyle('display: none')
+
+  })
+
+  test('URL and likes are shown when button controlling the shown details has been clicked', async () => {
+
+    const user = userEvent.setup()
+    const button = screen.getByText('view')
+    await user.click(button)
+
+    const div = container.querySelector('.hiddenblogDetail')
+    expect(div).not.toHaveStyle('display: none')
+
+  })
 
 })
