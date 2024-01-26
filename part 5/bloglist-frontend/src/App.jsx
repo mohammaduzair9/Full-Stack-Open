@@ -74,7 +74,6 @@ const App = () => {
       }
       const newBlogWithUser = { ...returnedBlog, user: returnedBlogUser }
       setBlogs(blogs.concat(newBlogWithUser))
-      console.log(blogs)
       setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
       setEventSuccess(1)
       setTimeout(() => {
@@ -83,6 +82,21 @@ const App = () => {
     } 
     catch (exception) {
       setNotification("Blog could not be created")
+      setEventSuccess(0)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
+  const handleAddLike = async (id, blogObject) => {
+    try {
+      const returnedBlog = await blogService.addLike(id, blogObject)
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : {...blog, likes: returnedBlog.likes}))
+      setEventSuccess(1)
+    } 
+    catch (exception) {
+      setNotification("Blog could not be liked")
       setEventSuccess(0)
       setTimeout(() => {
         setNotification(null)
@@ -126,7 +140,7 @@ const App = () => {
   const blogLists = () => ( 
     <div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addLike={handleAddLike} />
       )}
     </div>
   )
