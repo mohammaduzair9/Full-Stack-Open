@@ -57,7 +57,29 @@ describe('Blog app', function() {
       cy.get('#author').type('test author')
       cy.get('#url').type('www.test.com')
       cy.get('#create-blog-button').click()
-      cy.contains('another blog cypress')
+      cy.contains('test blog through cypress')
+    })
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'test blog through cypress',
+          author: 'test author',
+          url: 'www.test.com'
+        })
+      })
+
+      it('it can be liked', function () {
+        cy.contains('test blog through cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('test blog through cypress').parent().find('.like-button').as('likeButton')
+        cy.get('@likeButton').click()
+
+        cy.contains('1')
+          .contains('like')
+      })
     })
   })
 

@@ -13,7 +13,7 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
     method: 'POST',
     body: { title, author, url },
     headers: {
-      'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedNoteappUser')).token}`
+      'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
     }
   })
 
