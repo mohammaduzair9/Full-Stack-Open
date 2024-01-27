@@ -42,6 +42,8 @@ const reducer = (state = initialState, action) => {
   }
 }
 
+// Action createos are here:
+
 export const addVote = (id) => {
   return {
     type: 'ADD_VOTE',
