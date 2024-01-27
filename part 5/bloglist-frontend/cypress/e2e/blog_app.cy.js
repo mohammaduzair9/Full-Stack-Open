@@ -80,6 +80,17 @@ describe('Blog app', function() {
         cy.contains('1')
           .contains('like')
       })
+
+      it('it can be deleted by the user who created it', function () {
+        cy.contains('test blog through cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('test blog through cypress').parent().find('.remove-button').as('removeButton')
+        cy.get('@removeButton').click()
+
+        cy.contains('test blog through cypress').should('not.exist')
+      })
     })
   })
 
