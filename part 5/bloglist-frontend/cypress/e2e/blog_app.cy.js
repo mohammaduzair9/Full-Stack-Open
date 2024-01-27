@@ -1,12 +1,18 @@
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
-    const user = {
+    const user1 = {
       name: 'John Doe',
       username: 'john',
       password: 'doe'
     }
-    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    const user2 = {
+      name: 'Test User',
+      username: 'testuser',
+      password: 'test'
+    }
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user1)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user2)
     cy.visit('')
   })
 
@@ -90,6 +96,19 @@ describe('Blog app', function() {
         cy.get('@removeButton').click()
 
         cy.contains('test blog through cypress').should('not.exist')
+      })
+
+      it('only the creator can see the delete button of a blog, not anyone else', function () {
+        cy.login({ username: 'testuser', password: 'test' })
+
+        cy.contains('test blog through cypress')
+          .contains('view')
+          .click()
+
+        cy.contains('test blog through cypress').parent()
+          .contains('remove')
+          .should('not.exist')
+
       })
     })
   })
