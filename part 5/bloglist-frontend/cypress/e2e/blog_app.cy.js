@@ -111,6 +111,30 @@ describe('Blog app', function() {
 
       })
     })
+
+    describe('and several blogs exist', function () {
+      beforeEach(function () {
+        cy.createBlog({ title: 'first blog', author: 'first author', url: 'first url' })
+        cy.createBlog({ title: 'second blog', author: 'second author', url: 'second url' })
+        cy.createBlog({ title: 'third blog', author: 'third author', url: 'third url' })
+
+        cy.contains('first blog').contains('view').click()
+        cy.contains('first blog').parent().find('.like-button').click()
+
+        cy.contains('second blog').contains('view').click()
+        cy.contains('second blog').parent().find('.like-button').click().wait(50).click()
+
+        cy.contains('third blog').contains('view').click()
+        cy.contains('third blog').parent().find('.like-button').click().wait(50).click().wait(50).click()
+      })
+
+      it('blogs are ordered according to likes with the blog with the most likes being first', function () {
+        cy.get('.blog').eq(0).should('contain', 'third blog')
+        cy.get('.blog').eq(1).should('contain', 'second blog')
+        cy.get('.blog').eq(2).should('contain', 'first blog')
+      })
+
+    })
   })
 
 })

@@ -93,6 +93,7 @@ const App = () => {
     try {
       const returnedBlog = await blogService.addLike(id, blogObject)
       setBlogs(blogs.map(blog => blog.id !== id ? blog : { ...blog, likes: returnedBlog.likes }))
+      getBlogs()
       setEventSuccess(true)
     }
     catch (exception) {
