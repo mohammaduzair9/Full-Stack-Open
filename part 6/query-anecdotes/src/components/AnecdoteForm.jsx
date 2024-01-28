@@ -12,7 +12,14 @@ const AnecdoteForm = () => {
     mutationFn: createAnecdote, 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
-    }
+    },
+    onError: () => {
+      dispatch({ type: 'show', payload: 'too short anecdote, must have length 5 or more' })
+
+      setTimeout(() => {
+        dispatch({ type: 'remove' })
+      }, 5000)
+      }
   })
 
   const onCreate = (event) => {
