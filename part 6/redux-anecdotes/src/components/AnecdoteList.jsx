@@ -4,8 +4,12 @@ import { addVote } from '../reducers/anecdoteReducer'
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
 
-  const anecdotes = useSelector(state => state.sort((a, b) => b.votes - a.votes))
-
+  const anecdotes = useSelector(state => {
+    return state.anecdotes
+      .sort((a, b) => b.votes - a.votes)
+      .filter(a => a.content.toLowerCase().includes(state.filter.toLowerCase()));
+  })
+  
   const vote = (id) => {
     console.log('vote', id)
     dispatch(addVote(id));
